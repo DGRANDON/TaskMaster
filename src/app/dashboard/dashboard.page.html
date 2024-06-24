@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      <img src="assets/images/TM_LOGO.png" alt="TaskMaster Logo" style="height: 40px;">
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [class.productivity-mode]="productivityMode">
+  <div class="productivity-button ion-activatable" (click)="toggleProductivityMode()">
+    <ion-button color="secondary" fill="outline">
+      <ion-icon slot="start" name="rocket"></ion-icon>
+      {{ productivityMode ? 'Desactivar Modo Productivo' : 'Activar Modo Productivo' }}
+      <ion-ripple-effect></ion-ripple-effect>
+    </ion-button>
+  </div>
+
+  <!-- Tareas -->
+  <ion-list>
+    <ion-item *ngFor="let task of importantTasks">
+      <ion-label>
+        <h2>{{ task.title }}</h2>
+        <p>{{ task.description }}</p>
+        <p>Fecha de vencimiento: {{ task.dueDate }}</p>
+        <p>Prioridad: {{ task.priority }}</p>
+      </ion-label>
+      <ion-button fill="clear" color="danger" (click)="deleteTask(task.id)">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <!-- Botones de navegación -->
+  <ion-button color="secondary" expand="full" (click)="goToCreateTask()">Crear Tarea</ion-button>
+  <ion-button color="secondary" expand="full" (click)="goToViewTasks()">Ver Tareas</ion-button>
+</ion-content>
+
+
+
+
+

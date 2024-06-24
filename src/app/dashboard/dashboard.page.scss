@@ -1,0 +1,28 @@
+ion-content {
+  --background: var(--ion-color-light);
+  transition: background-color 0.3s ease;
+}
+
+.productivity-mode ion-content {
+  --background: #f0f0f0;
+}
+
+.productivity-button {
+  position: relative;
+  overflow: hidden;
+}
+
+ion-button {
+  transition: none !important;
+  animation: none !important;
+}
+
+.productivity-mode ion-button {
+  background-color: #4caf50;
+}
+
+.productivity-mode ion-button:hover {
+  background-color: #357a38;
+}
+
+
