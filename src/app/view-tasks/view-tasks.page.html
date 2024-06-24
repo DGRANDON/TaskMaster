@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Ver Tareas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngFor="let task of tasks">
+    <ion-card-header>
+      <ion-card-title>{{ task.title }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      {{ task.description }}
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+

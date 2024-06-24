@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Crear Tarea</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="taskForm" (ngSubmit)="addTask()">
+    <ion-item>
+      <ion-label position="floating">Título de la Tarea</ion-label>
+      <ion-input type="text" formControlName="title"></ion-input>
+    </ion-item>
+    <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
+      <ion-note color="danger">El título es obligatorio</ion-note>
+    </div>
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-textarea formControlName="description"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Fecha de Vencimiento</ion-label>
+      <ion-datetime formControlName="dueDate"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label>Prioridad</ion-label>
+      <ion-select formControlName="priority">
+        <ion-select-option value="low">Baja</ion-select-option>
+        <ion-select-option value="medium">Media</ion-select-option>
+        <ion-select-option value="high">Alta</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <!-- Aquí agregaré el FormArray para subtareas más adelante -->
+    <ion-button color="secondary" expand="full" type="submit" [disabled]="taskForm.invalid">Crear Tarea</ion-button>
+  </form>
+</ion-content>
