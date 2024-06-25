@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, NotFoundComponent],
@@ -28,7 +29,8 @@ import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    HttpClientModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, SQLite],
   bootstrap: [AppComponent],

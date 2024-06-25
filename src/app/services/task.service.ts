@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Observable, from } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { ApiService } from './api.service';
 import { SqliteService } from './sqlite.service';
 
 export interface Task {
@@ -8,47 +10,50 @@ export interface Task {
   description: string;
   dueDate: string;
   priority: string;
-  subtasks: Task[];
+  subtasks: any[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
-  private tasks: Task[] = [];
-  private tasksSubject: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
+  constructor(private apiService: ApiService, private sqliteService: SqliteService) {}
 
-  constructor(private sqliteService: SqliteService) {
-    this.loadTasks();
+  // Método para sincronizar las tareas entre SQLite y la API
+  syncTasks(): Observable<void> {
+    return this.sqliteService.getTasks().pipe(
+      switchMap(localTasks => {
+        return this.apiService.getTasks().pipe(
+          switchMap(apiTasks => {
+            // Aquí se puede implementar la lógica para sincronizar las tareas
+            // Por simplicidad, vamos a suponer que las tareas del API siempre prevalecen
+            const tasksToSave = apiTasks.map(apiTask => ({
+              ...apiTask,
+              id: apiTask.id
+            }));
+
+            return from(this.sqliteService.clearTasks()).pipe(
+              switchMap(() => this.sqliteService.addTasks(tasksToSave))
+            );
+          })
+        );
+      })
+    );
   }
 
-  private async loadTasks() {
-    this.tasks = await this.sqliteService.getTasks();
-    this.tasksSubject.next(this.tasks);
+  getTasks(): Observable<Task[]> {
+    return this.sqliteService.getTasks();
   }
 
-  getTasks() {
-    return this.tasksSubject.asObservable();
+  addTask(task: Task): Observable<Task> {
+    return from(this.sqliteService.addTask(task)).pipe(
+      switchMap(() => this.apiService.createTask(task))
+    );
   }
 
-  async addTask(task: Task) {
-    await this.sqliteService.addTask(task.title, task.description, task.dueDate, task.priority);
-    this.tasks.push(task);
-    this.tasksSubject.next(this.tasks);
-  }
-
-  async updateTask(task: Task) {
-    await this.sqliteService.updateTask(task.id, task.title, task.description, task.dueDate, task.priority);
-    const index = this.tasks.findIndex(t => t.id === task.id);
-    if (index > -1) {
-      this.tasks[index] = task;
-      this.tasksSubject.next(this.tasks);
-    }
-  }
-
-  async deleteTask(taskId: number) {
-    await this.sqliteService.deleteTask(taskId);
-    this.tasks = this.tasks.filter(t => t.id !== taskId);
-    this.tasksSubject.next(this.tasks);
+  deleteTask(id: number): Observable<void> {
+    return from(this.sqliteService.deleteTask(id)).pipe(
+      switchMap(() => this.apiService.deleteTask(id))
+    );
   }
 }

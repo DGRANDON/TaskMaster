@@ -28,7 +28,7 @@ export class CreateTaskPage {
   async addTask() {
     if (this.taskForm.valid) {
       const newTask: Task = {
-        id: Date.now(),
+        id: Date.now(), // Esto será reemplazado por el ID autoincrementado de SQLite
         ...this.taskForm.value,
         subtasks: [] // Inicializamos las subtareas vacías por ahora
       };
